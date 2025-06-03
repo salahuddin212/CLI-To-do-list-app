@@ -1,4 +1,3 @@
-#
 """
 Welcome to my modest CLI To-do list :)
 
@@ -11,9 +10,14 @@ Features:
 Author: Salahuddin (Me) 
 """
 
-tasks = [] # List of tasks(they're going to be a dictionary for each task)
 
-def show_menu(): # Function for the main menu
+from datetime import datetime  # Used to parse and format dates
+
+# Store all tasks in a list
+tasks = []
+
+def show_menu():
+    """Displays the main menu."""
     print("\nTo-Do List Menu:")
     print("1. Add Task")
     print("2. View Tasks")
@@ -21,46 +25,60 @@ def show_menu(): # Function for the main menu
     print("4. Delete Task")
     print("5. Exit")
 
-def add_task(): # Function for adding tasks
+def add_task():
+    """Adds a new task with an optional due date."""
     title = input("Enter task title: ")
-    task = {"title": title, "done": False}
-    tasks.append(task) # add task dictionary into the "tasks" list
-    print(f"Task '{title}' added.")
+    due_input = input("Enter due date (YYYY-MM-DD) or leave blank: ")
+    try:
+        # Convert input string to a date object
+        due_date = datetime.strptime(due_input, "%Y-%m-%d").date() if due_input else None
+    except ValueError:
+        print("Invalid date format. Task will have no due date.")
+        due_date = None
 
-def view_tasks(): # Function for viewing tasks
+    # Create the task dictionary and add it to the list
+    task = {"title": title, "done": False, "due": due_date}
+    tasks.append(task)
+    print(f"Task '{title}' added with due date: {due_date if due_date else 'None'}.")
+
+def view_tasks():
+    """Displays all tasks with their status and due dates."""
     if not tasks:
-        print("No tasks added yet.") # If the tass list is empty, print this.
+        print("No tasks added yet.")
         return
     print("\nYour Tasks:")
-    for i, task in enumerate(tasks, start=1): # a for loop that goes through in the list "tasks"(which is now indexed starting from 1, thanks to enumertate() function)
+    for i, task in enumerate(tasks, start=1):
         status = "✅" if task["done"] else "❌"
-        print(f"{i}. [{status}] {task['title']}")
+        due = task["due"].strftime("%Y-%m-%d") if task["due"] else "No due date"
+        print(f"{i}. [{status}] {task['title']} (Due: {due})")
 
 def mark_done():
+    """Marks a selected task as done."""
     view_tasks()
-    try: # to catch value errors.
+    try:
         index = int(input("Enter task number to mark as done: ")) - 1
-        if 0 <= index < len(tasks): # the number enterd by user have to be non-negative and not exceed the number of tasks.
-            tasks[index]["done"] = True 
+        if 0 <= index < len(tasks):
+            tasks[index]["done"] = True
             print(f"Task '{tasks[index]['title']}' marked as done.")
         else:
             print("Invalid task number.")
-    except ValueError: 
+    except ValueError:
         print("Please enter a valid number.")
 
 def delete_task():
+    """Deletes a selected task."""
     view_tasks()
     try:
-        index = int(input("Enter task number to delete: ")) - 1 # -1 is here because python index start from 0 not one.
-        if 0 <= index < len(tasks): # check that user's input is valid
-            removed = tasks.pop(index) 
+        index = int(input("Enter task number to delete: ")) - 1
+        if 0 <= index < len(tasks):
+            removed = tasks.pop(index)
             print(f"Task '{removed['title']}' deleted.")
         else:
             print("Invalid task number.")
     except ValueError:
         print("Please enter a valid number.")
 
-# The main while loop for the program
+# Main loop that runs the CLI app
 while True:
     show_menu()
     choice = input("Choose an option (1-5): ")
@@ -75,6 +93,6 @@ while True:
         delete_task()
     elif choice == "5":
         print("Goodbye!")
-        break # exit the while loop
+        break
     else:
-        print("Invalid choice. Please try again.") # if user inputs something else other than no. from 1-5
+        print("Invalid choice. Please try again.")
