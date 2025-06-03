@@ -68,7 +68,7 @@ python todo.py
 ## 🛠️ Future Improvements (For later)
 
 - 🗂 Save tasks to a file using `json` (so they persist after you close the app)
-- ⏰ Add due dates or priorities
+- ⏰ Add due dates (Done,feature has been added)
 - 🌈 Add color using the `colorama` library
 
 ---
